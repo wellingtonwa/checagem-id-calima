@@ -44,7 +44,7 @@ const run = (opts) => {
     const regex1 = /<(InputGroupInline|CustomInput|\w*IS)(.|\r\n)*?\/>/gm;
     run(options_tsx);
     run(options_ts);
-    for(let arquivo of options.arquivos_encontrados) {
+    for(let arquivo of options_tsx.arquivos_encontrados) {
         let conteudo = await ioUtils.getFileContent({filePath: arquivo});
         let array1;
         while ((array1 = regex1.exec(conteudo)) !== null) {
