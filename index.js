@@ -9,20 +9,22 @@ const REGEX_INPUTS = /<(InputGroupInline|CustomInput|\w*IS)(.|\r\n)*?\/>/gm;
 const REGEX_PATH_MENU = /'([\w0-9]*)'(?!;)/gm;
 const REGEX_CAMINHO_MENU = /(?<=to: '\/[a-z]{3}\/)(.*)?(?=')/gm;
 
+const CALIMA_ROOT_PATH = '/home/wellington/dev/dev/calima/';
+
 const options_tsx = { 
-    initial_path: 'D:/sistemas/calima-react/react/src/views/pages/',
+    initial_path: CALIMA_ROOT_PATH + 'react/src/views/pages/',
     extname: '.tsx',
     arquivos_encontrados: [],
 };
 
 const options_ts = {
-    initial_path: 'D:/sistemas/calima-react/react/src/models',
+    initial_path: CALIMA_ROOT_PATH + 'react/src/models',
     extname: '.ts',
     arquivos_encontrados: [],
 }
 
 const options_menu_ts = {
-    initial_path: 'D:/sistemas/calima-react/react/src',
+    initial_path: CALIMA_ROOT_PATH + 'react/src',
     extname: '.ts',
     arquivos_encontrados: [],
 }
