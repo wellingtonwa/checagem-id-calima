@@ -6,10 +6,11 @@ const REGEX_PADRAO_NOME = { '.tsx': /^[A-Z]\w*/, '.ts': /^[a-z]\w*/ };
 const REGEX_ROUTES = /.*(routes).ts$/i;
 const REGEX_MENU = /.*(menu).ts$/i;
 const REGEX_INPUTS = /<(InputGroupInline|CustomInput|\w*IS)(.|\r\n)*?\/>/gm;
+const REGEX_CUSTOM_INPUT = /<CustomInput(.|r\n|\n)*?\/>/gm;
 const REGEX_PATH_MENU = /'([\w0-9]*)'(?!;)/gm;
 const REGEX_CAMINHO_MENU = /(?<=to: '\/[a-z]{3}\/)(.*)?(?=')/gm;
 
-const CALIMA_ROOT_PATH = '/home/wellington/dev/dev/calima/';
+const CALIMA_ROOT_PATH = '/home/wellington/dev/dev/calima-react/';
 
 const options_tsx = { 
     initial_path: CALIMA_ROOT_PATH + 'react/src/views/pages/',
@@ -29,6 +30,12 @@ const options_menu_ts = {
     arquivos_encontrados: [],
 }
 
+const options_custom_input = {
+    initial_path: CALIMA_ROOT_PATH + 'react/src/views/pages/',
+    extname: '.tsx',
+    arquivos_encontrados: [],
+}
+
 const varrerDiretorios = (caminho, extensao_arquivo, arquivos_encontrados) => {
     
     const conteudo_pasta = fs.readdirSync(caminho, { withFileTypes: true })
@@ -40,7 +47,7 @@ const varrerDiretorios = (caminho, extensao_arquivo, arquivos_encontrados) => {
             
             if(path.extname(item_pasta.name) == extensao_arquivo) {
                 if (!item_pasta.name.match(REGEX_PADRAO_NOME[extensao_arquivo])) {
-                    console.log(`O arquivo ${item_pasta.name} deve iniciar com letra minúscula.`);
+                    console.log(`O arquivo ${item_pasta.name} deve iniciar com letra minúscula. Caminho: ${caminho}.`);
                 }
                 arquivos_encontrados.push(path.join(caminho, item_pasta.name));
             }
@@ -53,7 +60,7 @@ const run = (opts) => {
     varrerDiretorios(opts.initial_path, opts.extname, opts.arquivos_encontrados);
 }
 
- // Método para pesquisar se os inputs tem o atributo id informado
+// Método para pesquisar se os inputs tem o atributo id informado
 const checkIds = async (options_tsx) => {
     for(let arquivo of options_tsx.arquivos_encontrados) {
         let conteudo = await ioUtils.getFileContent({filePath: arquivo});
@@ -98,15 +105,35 @@ const checkPagesMenu = async (options_menu_ts) => {
     }
 }
 
+const checkCustomInput = async (options_custom_input) => {
+
+    // Método para pesquisar se os inputs tem o atributo id informado
+    for(let arquivo of options_custom_input.arquivos_encontrados) {
+        let conteudo = await ioUtils.getFileContent({filePath: arquivo});
+        let array1;
+        if ((array1 = REGEX_CUSTOM_INPUT.exec(conteudo)) !== null) {
+            const input = array1[0].replace(/(\n|\r\n| {2,})/g, ' ');
+            if (input.indexOf("type=\"switch\"") !== -1){
+                console.log(`O Arquivo ${arquivo} contém checkbox com custom input`);
+                continue;
+            }
+        }
+
+    }
+}
+
 (async () => {
     
-    run(options_tsx);
-    run(options_ts);
-    run(options_menu_ts);
-    
+    // run(options_tsx);
+    // run(options_ts);
+    // run(options_menu_ts);
+    run(options_custom_input);
+
     // Verificando se os inputs tem o atributo id informado
-    checkIds(options_tsx);
+    // checkIds(options_tsx);
     // Verificando se as paginas do projeto estão no menu
-    checkPagesMenu(options_menu_ts);
+    // checkPagesMenu(options_menu_ts);
+
+    checkCustomInput(options_custom_input);
 
 })()
